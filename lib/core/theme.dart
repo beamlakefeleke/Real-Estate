@@ -13,10 +13,10 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primaryColor,
     scaffoldBackgroundColor: backgroundColor,
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
       primary: primaryColor,
       secondary: secondaryColor,
-      background: backgroundColor,
+      surface: backgroundColor,
       error: errorColor,
     ),
     appBarTheme: const AppBarTheme(
@@ -74,6 +74,7 @@ class AppTheme {
         borderSide: BorderSide(color: errorColor, width: 2),
       ),
       hintStyle: TextStyle(color: Colors.grey.shade600),
+      labelStyle: const TextStyle(color: Colors.black),
     ),
   );
 
@@ -81,10 +82,10 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     primaryColor: primaryColor,
     scaffoldBackgroundColor: Colors.black,
-    colorScheme: ColorScheme.dark(
+    colorScheme: const ColorScheme.dark(
       primary: primaryColor,
       secondary: secondaryColor,
-      background: Colors.black,
+      surface: Colors.black,
       error: errorColor,
     ),
     appBarTheme: const AppBarTheme(

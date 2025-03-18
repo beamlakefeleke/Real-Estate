@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../data/models/user_model.dart';
 import '../../view_models/auth_view_model.dart';
 import '../../core/theme.dart';
 import '../../core/routes.dart';
@@ -84,17 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: "Login",
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          await authViewModel.loginUser(
-                            _emailController.text,
-                            _passwordController.text,
-                          );
-                          if (authViewModel.errorMessage == null) {
-                            Navigator.pushReplacementNamed(context, AppRoutes.buyerHome);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(authViewModel.errorMessage!)),
-                            );
-                          }
+                          handleLogin(context, authViewModel);
                         }
                       },
                     ),
@@ -131,4 +122,47 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  /// 🔥 Handles login & role-based navigation
+  void handleLogin(BuildContext context, AuthViewModel authViewModel) async {
+  try {
+    await authViewModel.loginUser(
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    if (authViewModel.user != null) {
+      print("✅ Logged in as: ${authViewModel.user!.role}");
+
+      String route;
+      switch (authViewModel.user!.role.toLowerCase()) {
+        case "admin":
+          route = AppRoutes.adminDashboard;
+          break;
+        case "buyer":
+          route = AppRoutes.buyerHome;
+          break;
+        case "seller":
+          route = AppRoutes.sellerDashboard;
+          break;
+        default:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Unknown role: ${authViewModel.user!.role}")),
+          );
+          return;
+      }
+
+      Navigator.pushReplacementNamed(context, route);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Login failed. Please check your credentials.")),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error: ${e.toString()}")),
+    );
+  }
+}
+
 }

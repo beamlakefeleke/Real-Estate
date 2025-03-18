@@ -28,21 +28,30 @@ class PropertyViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Fetch properties by seller
-  Future<void> fetchPropertiesBySeller(String sellerId) async {
+   Future<void> fetchPropertiesBySeller(String sellerId) async {
     _isLoading = true;
     notifyListeners();
 
     try {
+      print("Fetching properties for seller: $sellerId"); // ✅ Debug Log
       _properties = await _propertyRepository.getPropertiesBySeller(sellerId);
+
+      if (_properties.isEmpty) {
+        print("No properties found for seller: $sellerId"); // ✅ Debug Log
+      } else {
+        print("Fetched ${_properties.length} properties for seller: $sellerId"); // ✅ Debug Log
+      }
+
       _errorMessage = null;
     } catch (e) {
       _errorMessage = e.toString();
+      print("Error fetching properties: $_errorMessage"); // ✅ Debug Log
     }
 
     _isLoading = false;
     notifyListeners();
   }
+
 
   // Add new property
   Future<void> addProperty(Property property) async {

@@ -13,9 +13,15 @@ class AuthRepository {
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   // Register a new user
-  Future<UserModel?> registerUser(String name, String email, String password, String phone, String role) async {
+    // Register a new user
+  Future<UserModel?> registerUser(
+      String name, String email, String password, String phone, String role) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
       User? user = userCredential.user;
 
       if (user != null) {
@@ -33,25 +39,32 @@ class AuthRepository {
         return newUser;
       }
       return null;
+    } on FirebaseAuthException catch (e) {
+      print("FirebaseAuthException: ${e.code} - ${e.message}");
+      return null;
     } catch (e) {
-      throw Exception("Registration failed: ${e.toString()}");
+      print("Unknown Error: ${e.toString()}");
+      return null;
     }
   }
+
 
   // Login user
   Future<UserModel?> loginUser(String email, String password) async {
-    try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(userCredential.user!.uid).get();
+  try {
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    DocumentSnapshot userDoc = await _firestore.collection('users').doc(userCredential.user!.uid).get();
 
-      if (userDoc.exists) {
-        return UserModel.fromFirestore(userDoc);
-      }
-      return null;
-    } catch (e) {
-      throw Exception("Login failed: ${e.toString()}");
+    if (userDoc.exists) {
+      UserModel user = UserModel.fromFirestore(userDoc);
+      return user; // ✅ Return the user model with role
     }
+    return null;
+  } catch (e) {
+    throw Exception("Login failed: ${e.toString()}");
   }
+}
+
 
   // Logout user
   Future<void> logoutUser() async {

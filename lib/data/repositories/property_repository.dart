@@ -17,13 +17,24 @@ class PropertyRepository {
   // Fetch properties by seller ID
   Future<List<Property>> getPropertiesBySeller(String sellerId) async {
     try {
+      print("Querying Firestore for sellerId: $sellerId"); // ✅ Debug Log
+
       QuerySnapshot snapshot = await _firestore
           .collection('properties')
           .where('sellerId', isEqualTo: sellerId)
           .get();
-      return snapshot.docs.map((doc) => Property.fromFirestore(doc)).toList();
+
+      if (snapshot.docs.isEmpty) {
+        print("No listings found for seller: $sellerId"); // ✅ Debug Log
+      }
+
+      return snapshot.docs.map((doc) {
+        print("Fetched Property: ${doc.data()}"); // ✅ Debug Log
+        return Property.fromFirestore(doc);
+      }).toList();
     } catch (e) {
-      throw Exception("Error fetching seller properties: ${e.toString()}");
+      print("Error fetching properties from Firestore: $e"); // ✅ Debug Log
+      throw Exception("Error fetching properties: ${e.toString()}");
     }
   }
 

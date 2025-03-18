@@ -30,21 +30,24 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Login user
-  Future<void> loginUser(String email, String password) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
+// Login user
+Future<UserModel?> loginUser(String email, String password) async {
+  _isLoading = true;
+  _errorMessage = null;
+  notifyListeners();
 
-    try {
-      _user = await _authRepository.loginUser(email, password);
-    } catch (e) {
-      _errorMessage = e.toString();
-    }
-
+  try {
+    _user = await _authRepository.loginUser(email, password);
+    return _user; // ✅ Return the user object
+  } catch (e) {
+    _errorMessage = e.toString();
+    return null; // ✅ Return null if login fails
+  } finally {
     _isLoading = false;
     notifyListeners();
   }
+}
+
 
   // Logout user
   Future<void> logoutUser() async {

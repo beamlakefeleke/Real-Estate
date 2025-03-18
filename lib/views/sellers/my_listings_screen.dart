@@ -11,16 +11,19 @@ class MyListingsScreen extends StatefulWidget {
 }
 
 class _MyListingsScreenState extends State<MyListingsScreen> {
-  @override
-  void initState() {
-    super.initState();
-    
-    // Get Seller ID from FirebaseAuth
+ @override
+void initState() {
+  super.initState();
+
+  Future.microtask(() {
     final sellerId = FirebaseAuth.instance.currentUser?.uid;
+    print("sellerId $sellerId");
     if (sellerId != null) {
       Provider.of<PropertyViewModel>(context, listen: false).fetchPropertiesBySeller(sellerId);
     }
-  }
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {

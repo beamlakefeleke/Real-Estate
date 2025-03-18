@@ -36,11 +36,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscureText: widget.obscureText ? _isObscure : false,
       validator: widget.validator,
       maxLines: widget.maxLines,
+      style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         hintText: widget.hintText,
         prefixIcon: Icon(widget.icon, color: AppTheme.primaryColor),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: Colors.black.withOpacity(0.05),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
